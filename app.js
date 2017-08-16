@@ -8,6 +8,7 @@ const passport = require('passport');
 const Strategy = require('passport-local').Strategy;
 const flash = require('connect-flash');
 const registerRoute = require('./routes/register');
+const routes = require('./routes/index');
 const loginRoute = require('./routes/login');
 const postRoute = require('./routes/post');
 const apiRoute = require('./routes/api');
@@ -69,7 +70,6 @@ app.use(methodOverride());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
 app.use(session({
   store: new RedisStore({
     url: 'redis://localhost'
@@ -83,7 +83,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(flash());
 app.use(passport.session());
-// app.use('/api', apiRoute.auth);
 app.use(user);
 app.use(messages);
 
@@ -93,6 +92,8 @@ app.all('*', (req, res, next) => {
   next();
 })
 
+app.get('/', pager(post.count, 5), postRoute.list);
+app.get('/post/:page', pager(post.count, 5), postRoute.list);
 app.get('/post',
   require('connect-ensure-login').ensureLoggedIn(),
   postRoute.form);
@@ -106,11 +107,18 @@ app.post('/login',
   passport.authenticate('local', { failureRedirect: '/login', successRedirect: '/' }));
 app.get('/logout', loginRoute.logout);
 
-
 app.get('/api/post/:page', pager(post.count, 5), apiRoute.posts);
 
-app.get('/:page?', pager(post.count, 5), postRoute.list);
+if (process.env.ERROR_ROUTE) {
+  app.get('/dev/error', (req, res, next) => {
+    var err = new Error('服务器错误');
+    // err.type = 'database';
+    next(err);
+  })
+}
 
+app.use(routes.notFound);
+app.use(routes.error);
 
 app.listen(3000, () => {
   console.log('server start!');

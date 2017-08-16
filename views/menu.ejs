@@ -1,12 +1,11 @@
-<% if (locals.user) { %>
-  <div id="menu">
-    <span><%=user.name %></span>
-    <a href="/post">发布</a>
-    <a href="/logout">退出</a>
-  </div>
-<% } else { %>
-  <div id="menu">
-    <a href="/login">登录</a>
-    <a href="/register">注册</a>
-  </div>
-<% } %>
+<div id="menu">
+  <a href="/">首页</a>
+  <% if (locals.user) { %>
+      <a href="/post">发布</a>
+      <a href="/logout">退出</a>
+      <span><%=user.name %></span>
+  <% } else { %>
+      <a href="/login">登录</a>
+      <a href="/register">注册</a>
+  <% } %>
+</div>
