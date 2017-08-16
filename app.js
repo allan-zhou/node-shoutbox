@@ -3,11 +3,14 @@ const path = require('path');
 const methodOverride = require('method-override');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const register = require('./routes/register');
-const login = require('./routes/login');
-const post = require('./routes/post');
+const registerRoute = require('./routes/register');
+const loginRoute = require('./routes/login');
+const postRoute = require('./routes/post');
 const user = require('./lib/middleware/user');
+const post = require('./lib/post');
 const messages = require('./lib/middleware/messages');
+const validate = require('./lib/middleware/validate');
+const pager = require('./lib/middleware/pager');
 
 const app = express();
 
@@ -19,28 +22,28 @@ app.use(methodOverride());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(session({
-  name:'sessionid',
+  name: 'sessionid',
   secret: 'shoutbox',
   cookie: { path: '/', maxAge: 3600000 }
 }));
 app.use(user);
 app.use(messages);
 
-app.all('*',(req, res, next) => {
+app.all('*', (req, res, next) => {
   console.log(`req.method:${req.method}  req.url:${req.url}`);
   console.log(req.session);
   next();
 })
 
-app.get('/', post.list);
-app.get('/post', post.form);
-app.post('/post', post.submit);
+app.get('/', pager(post.count, 5), postRoute.list);
+app.get('/post', postRoute.form);
+app.post('/post', validate.required('post[title]'), validate.lengthRange('post[title]', 5), postRoute.submit);
 
-app.get('/register', register.form);
-app.post('/register', register.submit);
+app.get('/register', registerRoute.form);
+app.post('/register', registerRoute.submit);
 
-app.get('/login', login.form);
-app.post('/login', login.submit);
-app.get('/logout', login.logout);
+app.get('/login', loginRoute.form);
+app.post('/login', loginRoute.submit);
+app.get('/logout', loginRoute.logout);
 
 app.listen(3000);

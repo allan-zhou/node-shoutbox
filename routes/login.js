@@ -14,7 +14,7 @@ exports.submit = (req, res, next) => {
       req.session.uid = user.id;
       res.redirect('/');
     } else {
-      messages.error(req.session, '对不起，您输入的用户名或密码不正常');
+      messages.error(req, '对不起，您输入的用户名或密码不正常');
       res.redirect('back');
     }
   })

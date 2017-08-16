@@ -12,7 +12,7 @@ exports.submit = (req, res, next) => {
     if (err) return next(err);
 
     if (user.id) {
-      Messages.error(req.session, '用户名已存在');
+      Messages.error(req, '用户名已存在');
       res.redirect('back');
     } else {
       user = new User({

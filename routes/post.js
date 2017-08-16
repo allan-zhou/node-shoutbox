@@ -22,7 +22,8 @@ exports.submit = (req, res, next) => {
 }
 
 exports.list = (req, res, next) => {
-  Post.getRange(0, -1, (err, posts) => {
+  var page = req.page;
+  Post.getRange(page.from, page.to, (err, posts) => {
     if (err) return next(err);
     res.render('index', {
       title: 'Post',
