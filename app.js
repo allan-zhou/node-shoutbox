@@ -5,6 +5,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const register = require('./routes/register');
 const login = require('./routes/login');
+const post = require('./routes/post');
 const user = require('./lib/middleware/user');
 const messages = require('./lib/middleware/messages');
 
@@ -20,7 +21,7 @@ app.use(bodyParser.json());
 app.use(session({
   name:'sessionid',
   secret: 'shoutbox',
-  cookie: { path: '/', maxAge: 60000 }
+  cookie: { path: '/', maxAge: 3600000 }
 }));
 app.use(user);
 app.use(messages);
@@ -31,18 +32,9 @@ app.all('*',(req, res, next) => {
   next();
 })
 
-app.get('/', function(req, res, next) {
-  if (req.session.views) {
-    req.session.views++
-    res.setHeader('Content-Type', 'text/html')
-    res.write('<p>views: ' + req.session.views + '</p>')
-    res.write('<p>expires in: ' + (req.session.cookie.maxAge / 1000) + 's</p>')
-    res.end()
-  } else {
-    req.session.views = 1
-    res.end('welcome to the session demo. refresh!')
-  }
-});
+app.get('/', post.list);
+app.get('/post', post.form);
+app.post('/post', post.submit);
 
 app.get('/register', register.form);
 app.post('/register', register.submit);

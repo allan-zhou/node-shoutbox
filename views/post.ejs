@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <%- include('menu') %>
+
+    <h1>
+        <%= title %>
+    </h1>
+    <p>请输入你要发布的内容</p>
+
+     <%- include('message') %>
+
+    <form action="/post" method="post">
+        <p>
+          <input type="text" name="post[title]" placeholder="标题">
+        </p>
+        <p>
+          <textarea name="post[body]" placeholder="内容" rows="3"></textarea>
+        </p>
+        <p>
+          <input type="submit" value="发布">
+        </p>
+    </form>        
+
+</body>
+
+</html>

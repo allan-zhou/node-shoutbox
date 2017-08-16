@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <%- include('menu') %>
+
+    <h1>
+        <%= title %>
+    </h1>
+
+    <%- include('message') %>
+
+    <% data.forEach(function(post) { %>
+      <div class="post">
+        <h3><%= post.title%></h3>
+        <p><%= post.body%></p>
+        <p>发布人：<%= post.username%></p>
+      </div>
+    <% }) %>
+
+</body>
+
+</html>
