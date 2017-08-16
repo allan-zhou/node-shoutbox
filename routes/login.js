@@ -1,5 +1,7 @@
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 const User = require('../lib/user');
-var messages = require('../lib/messages');
+const messages = require('../lib/messages');
 
 exports.form = (req, res, next) => {
   res.render('login', { title: 'Login' });
@@ -7,6 +9,7 @@ exports.form = (req, res, next) => {
 
 exports.submit = (req, res, next) => {
   var data = req.body.user;
+  
   User.authenticate(data.name, data.pass, (err, user) => {
     if (err) return next(err);
 
@@ -23,7 +26,8 @@ exports.submit = (req, res, next) => {
 exports.logout = (req, res, next) => {
   req.session.destroy((err) => {
     if (err) return next(err);
-
+    
+    req.logout();
     res.redirect('/');
   });
 };
